@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PneumoScan AI - Chest X-Ray Pneumonia Detection</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="logo">&#10010;</span> PneumoScan <b>AI</b></div>
+    <nav>
+      <button class="tab active" data-view="analyze">Analyze</button>
+      <button class="tab" data-view="history">History</button>
+      <button class="tab" data-view="about">How it works</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ANALYZE -->
+    <section id="analyze" class="view active">
+      <div class="hero">
+        <h1>Chest X-Ray Pneumonia Detection</h1>
+        <p>Upload a chest X-ray and get an AI prediction with a heatmap showing what the model looked at.</p>
+      </div>
+
+      <div class="card">
+        <div id="dropzone" class="dropzone" tabindex="0">
+          <div id="dropPrompt">
+            <div class="drop-icon">&#8679;</div>
+            <p><b>Drag &amp; drop</b> an X-ray here, or <u>click to browse</u></p>
+            <small>JPG or PNG, up to 10 MB</small>
+          </div>
+          <img id="preview" alt="X-ray preview" hidden>
+          <input type="file" id="fileInput" accept="image/png,image/jpeg" hidden>
+        </div>
+        <div class="actions">
+          <button id="analyzeBtn" class="btn primary" disabled>Analyze X-ray</button>
+          <button id="resetBtn" class="btn" disabled>Clear</button>
+        </div>
+        <p id="error" class="error" hidden></p>
+      </div>
+
+      <div id="loader" class="card loader" hidden><div class="spinner"></div><p>Analyzing image...</p></div>
+
+      <div id="result" class="card" hidden>
+        <div class="result-head">
+          <span id="badge" class="badge"></span>
+          <span id="confText" class="conf-text"></span>
+        </div>
+        <div class="bar"><div id="barFill" class="bar-fill"></div></div>
+        <p id="warning" class="warning" hidden>&#9888; Low confidence. This result is uncertain - please consult a medical professional.</p>
+        <div class="images">
+          <figure><img id="origImg" alt="Original X-ray"><figcaption>Original X-ray</figcaption></figure>
+          <figure><img id="heatImg" alt="Grad-CAM heatmap"><figcaption>AI attention heatmap (red = most influential)</figcaption></figure>
+        </div>
+        <div class="probs">
+          <div>NORMAL <b id="pNormal"></b></div>
+          <div>PNEUMONIA <b id="pPneumonia"></b></div>
+        </div>
+        <button class="btn" onclick="window.print()">Download / print report</button>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="history" class="view">
+      <div class="card">
+        <h2>Recent predictions</h2>
+        <table>
+          <thead><tr><th>Time</th><th>File</th><th>Result</th><th>Confidence</th></tr></thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+        <p id="historyEmpty" class="muted">No predictions yet.</p>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="view">
+      <div class="card">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li><b>Upload</b> - your X-ray is sent to a FastAPI server.</li>
+          <li><b>Preprocess</b> - resized to 224x224 and normalized.</li>
+          <li><b>Predict</b> - a ResNet18 deep learning model outputs probabilities for NORMAL and PNEUMONIA.</li>
+          <li><b>Explain</b> - Grad-CAM draws a heatmap of the regions that drove the decision.</li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer>&#9888; For educational purposes only. This is NOT a medical diagnosis. Always consult a qualified doctor.</footer>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.db
+data/chest_xray/
+test_images/
+.vscode/
